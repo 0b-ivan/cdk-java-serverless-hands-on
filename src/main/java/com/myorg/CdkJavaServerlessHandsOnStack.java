@@ -7,6 +7,7 @@ import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.lambda.Code;
 import software.amazon.awscdk.services.lambda.Function;
 import software.amazon.awscdk.services.lambda.FunctionUrl;
+import software.amazon.awscdk.services.lambda.FunctionUrlOptions;
 import software.amazon.awscdk.services.lambda.FunctionUrlAuthType;
 import software.amazon.awscdk.services.lambda.Runtime;
 import software.constructs.Construct;
@@ -26,11 +27,12 @@ public class CdkJavaServerlessHandsOnStack extends Stack {
                 .timeout(Duration.seconds(10))
                 .build();
 
-        FunctionUrl helloFunctionUrl = helloFunction.addFunctionUrl(software.amazon.awscdk.services.lambda.FunctionUrlOptions.builder()
+        FunctionUrl helloFunctionUrl = helloFunction.addFunctionUrl(FunctionUrlOptions.builder()
                 .authType(FunctionUrlAuthType.NONE)
                 .build());
 
         CfnOutput.Builder.create(this, "HelloFunctionUrl")
+                // This sample intentionally uses a public URL to keep the hands-on flow minimal.
                 .value(helloFunctionUrl.getUrl())
                 .build();
     }
