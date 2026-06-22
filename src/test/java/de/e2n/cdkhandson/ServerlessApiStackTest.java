@@ -1,26 +1,25 @@
-// package de.e2n.cdkhandson;
+package de.e2n.cdkhandson;
 
-// import software.amazon.awscdk.App;
-// import software.amazon.awscdk.assertions.Template;
-// import java.io.IOException;
+import org.junit.jupiter.api.Test;
+import software.amazon.awscdk.App;
+import software.amazon.awscdk.assertions.Template;
 
-// import java.util.HashMap;
+import java.util.Map;
 
-// import org.junit.jupiter.api.Test;
+public class ServerlessApiStackTest {
 
-// example test. To run these tests, uncomment this file, along with the
-// example resource in src/main/java/de/e2n/cdkhandson/ServerlessApiStack.java
-// public class ServerlessApiStackTest {
+    @Test
+    public void stackContainsSqsQueue() {
+        App app = new App();
 
-//     @Test
-//     public void testStack() throws IOException {
-//         App app = new App();
-//         ServerlessApiStack stack = new ServerlessApiStack(app, "test");
+        ServerlessApiStack stack = new ServerlessApiStack(app, "TestServerlessApiStack");
 
-//         Template template = Template.fromStack(stack);
+        Template template = Template.fromStack(stack);
 
-//         template.hasResourceProperties("AWS::SQS::Queue", new HashMap<String, Number>() {{
-//           put("VisibilityTimeout", 300);
-//         }});
-//     }
-// }
+        template.hasResourceProperties("AWS::SQS::Queue", Map.of(
+                "VisibilityTimeout", 30,
+                "MessageRetentionPeriod", 345600,
+                "SqsManagedSseEnabled", true
+        ));
+    }
+}
