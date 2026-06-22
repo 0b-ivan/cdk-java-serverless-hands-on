@@ -1,13 +1,22 @@
-.classpath.txt
-target
+# Java / Maven
+target/
+*.class
+
+# AWS CDK
+cdk.out/
+
+# IDEs
+.idea/
+*.iml
 .classpath
 .project
-.idea
-.settings
-.vscode
-*.iml
+.settings/
 
-# CDK asset staging directory
-.cdk.staging
-cdk.out
+# macOS
+.DS_Store
 
+# Logs
+*.log
+
+# Environment
+.env
