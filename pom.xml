@@ -3,8 +3,8 @@
          xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.myorg</groupId>
-    <artifactId>cdk-java-init</artifactId>
+    <groupId>de.e2n</groupId>
+    <artifactId>cdk-java-serverless-hands-on</artifactId>
     <version>0.1</version>
 
     <properties>
@@ -30,7 +30,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>com.myorg.CdkJavaInitApp</mainClass>
+                    <mainClass>de.e2n.cdkhandson.CdkJavaServerlessHandsOnApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>
