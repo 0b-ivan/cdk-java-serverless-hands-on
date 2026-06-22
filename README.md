@@ -2,6 +2,9 @@
 
 A minimal AWS CDK application in Java that deploys a serverless hello endpoint backed by AWS Lambda.
 
+> [!WARNING]
+> The sample stack exposes a public Lambda function URL for a simple hands-on flow. Add authentication before using this pattern in production.
+
 ## Prerequisites
 
 - Java 17
