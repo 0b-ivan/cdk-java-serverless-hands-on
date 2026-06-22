@@ -30,7 +30,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>de.e2n.cdkhandson.CdkJavaServerlessHandsOnApp</mainClass>
+                    <mainClass>de.e2n.cdkhandson.CdkApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>
