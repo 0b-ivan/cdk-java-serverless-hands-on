@@ -42,5 +42,13 @@ public class ServerlessHandsOnStackTest {
                 "Runtime", "nodejs22.x",
                 "Timeout", 10
         ));
+
+        template.hasResourceProperties("AWS::ApiGateway::RestApi", Map.of(
+                "Name", "cdk-handson-message-api"
+        ));
+
+        template.hasResourceProperties("AWS::ApiGateway::Method", Map.of(
+                "HttpMethod", "POST"
+        ));
     }
 }

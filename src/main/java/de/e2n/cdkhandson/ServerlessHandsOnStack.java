@@ -3,6 +3,7 @@ package de.e2n.cdkhandson;
 import de.e2n.cdkhandson.constructs.MessageQueueConstruct;
 import de.e2n.cdkhandson.model.HandsOnProps;
 import de.e2n.cdkhandson.constructs.ApiLambdaConstruct;
+import de.e2n.cdkhandson.constructs.ApiGatewayConstruct;
 import software.amazon.awscdk.CfnOutput;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.Tags;
@@ -31,6 +32,18 @@ public class ServerlessHandsOnStack extends Stack {
                 messageQueue);
 
         var messageHandlerFunction = apiLambdaConstruct.getMessageHandlerFunction();
+
+        var apiGatewayConstruct = new ApiGatewayConstruct(
+                this,
+                "ApiGatewayConstruct",
+                messageHandlerFunction);
+
+        var restApi = apiGatewayConstruct.getRestApi();
+
+        CfnOutput.Builder.create(this, "MessageApiUrl")
+                .description("URL of the API Gateway messages endpoint")
+                .value(restApi.getUrl() + "messages")
+                .build();
 
         CfnOutput.Builder.create(this, "MessageHandlerFunctionName")
                 .description("Name of the Lambda function handling API messages")
