@@ -1,10 +1,12 @@
 package de.e2n.cdkhandson;
 
+import de.e2n.cdkhandson.constructs.ApiGatewayConstruct;
 import de.e2n.cdkhandson.constructs.ApiLambdaConstruct;
 import de.e2n.cdkhandson.constructs.MessageQueueConstruct;
 import de.e2n.cdkhandson.model.HandsOnProps;
 import software.amazon.awscdk.CfnOutput;
 import software.amazon.awscdk.Stack;
+import software.amazon.awscdk.services.apigateway.RestApi;
 import software.amazon.awscdk.services.lambda.Function;
 import software.amazon.awscdk.services.sqs.Queue;
 import software.constructs.Construct;
@@ -19,6 +21,9 @@ public class ServerlessHandsOnStack extends Stack {
     private ApiLambdaConstruct apiLambdaConstruct;
     private Function messageHandlerFunction;
 
+    private ApiGatewayConstruct apiGatewayConstruct;
+    private RestApi restApi;
+
     public ServerlessHandsOnStack(
             final Construct scope,
             final String id,
@@ -30,6 +35,7 @@ public class ServerlessHandsOnStack extends Stack {
 
         messageQueue("MessageQueueConstruct");
         apiLambda("ApiLambdaConstruct");
+        apiGateway("ApiGatewayConstruct");
         outputs();
     }
 
@@ -55,6 +61,19 @@ public class ServerlessHandsOnStack extends Stack {
         messageHandlerFunction = apiLambdaConstruct.getMessageHandlerFunction();
     }
 
+    private void apiGateway(final String id) {
+        if (messageHandlerFunction == null) {
+            throw new IllegalStateException("messageHandlerFunction is null");
+        }
+
+        apiGatewayConstruct = new ApiGatewayConstruct(
+                this,
+                id,
+                messageHandlerFunction);
+
+        restApi = apiGatewayConstruct.getRestApi();
+    }
+
     private void outputs() {
         if (messageQueue == null) {
             throw new IllegalStateException("messageQueue is null");
@@ -62,9 +81,20 @@ public class ServerlessHandsOnStack extends Stack {
         if (messageHandlerFunction == null) {
             throw new IllegalStateException("messageHandlerFunction is null");
         }
+        if (restApi == null) {
+            throw new IllegalStateException("restApi is null");
+        }
 
+        apiOutputs();
         lambdaOutputs();
         queueOutputs();
+    }
+
+    private void apiOutputs() {
+        CfnOutput.Builder.create(this, "MessageApiUrl")
+                .description("URL of the API Gateway messages endpoint")
+                .value(restApi.getUrl() + "messages")
+                .build();
     }
 
     private void lambdaOutputs() {
