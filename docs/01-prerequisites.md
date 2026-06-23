@@ -69,17 +69,21 @@ Der Account muss Folgendes erstellen dürfen:
 
 ## CDK Bootstrap
 
-Falls der Account noch nicht gebootstrapped ist:
+Ein neuer AWS Account muss vor dem ersten `cdk deploy` gebootstrapped werden.
 
-```bash id="r6pbbd"
-cdk bootstrap
+Bootstrap prüfen:
+
+```bash
+aws cloudformation describe-stacks \
+  --stack-name CDKToolkit \
+  --region eu-central-1
 ```
 
 ## Projekt prüfen
 
 ```bash id="hhrp4a"
 mvn test
-```
+
 
 Erwartung:
 
