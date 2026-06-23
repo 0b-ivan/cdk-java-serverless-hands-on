@@ -1,8 +1,10 @@
 package de.e2n.cdkhandson;
 
+import de.e2n.cdkhandson.constructs.MessageQueueConstruct;
 import de.e2n.cdkhandson.model.HandsOnProps;
 import software.amazon.awscdk.CfnOutput;
 import software.amazon.awscdk.Stack;
+import software.amazon.awscdk.Tags;
 import software.constructs.Construct;
 
 public class ServerlessHandsOnStack extends Stack {
@@ -13,19 +15,31 @@ public class ServerlessHandsOnStack extends Stack {
             final HandsOnProps props) {
         super(scope, id, props);
 
-        CfnOutput.Builder.create(this, "ProjectName")
-                .description("Name of the workshop project")
-                .value(props.getProjectName())
+        Tags.of(this).add("Project", props.getProjectName());
+        Tags.of(this).add("Workshop", "cdk-java");
+        Tags.of(this).add("Owner", props.getOwner());
+        Tags.of(this).add("Environment", props.getHandsOnEnvironment().name());
+
+        var messageQueueConstruct = new MessageQueueConstruct(
+                this,
+                "MessageQueueConstruct",
+                props.getMessageQueueName());
+
+        var messageQueue = messageQueueConstruct.getMessageQueue();
+
+        CfnOutput.Builder.create(this, "MessageQueueUrl")
+                .description("URL of the SQS message queue")
+                .value(messageQueue.getQueueUrl())
                 .build();
 
-        CfnOutput.Builder.create(this, "Owner")
-                .description("Owner of the workshop stack")
-                .value(props.getOwner())
+        CfnOutput.Builder.create(this, "MessageQueueName")
+                .description("Name of the SQS message queue")
+                .value(messageQueue.getQueueName())
                 .build();
 
-        CfnOutput.Builder.create(this, "HandsOnEnvironment")
-                .description("Environment of the workshop stack")
-                .value(props.getHandsOnEnvironment().name())
+        CfnOutput.Builder.create(this, "MessageQueueArn")
+                .description("ARN of the SQS message queue")
+                .value(messageQueue.getQueueArn())
                 .build();
     }
 }
