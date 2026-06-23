@@ -1,13 +1,13 @@
 package de.e2n.cdkhandson.constructs;
 
 import software.amazon.awscdk.Duration;
+import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.services.lambda.Code;
 import software.amazon.awscdk.services.lambda.Function;
 import software.amazon.awscdk.services.lambda.Runtime;
-import software.amazon.awscdk.services.sqs.Queue;
-import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.services.logs.LogGroup;
 import software.amazon.awscdk.services.logs.RetentionDays;
+import software.amazon.awscdk.services.sqs.Queue;
 import software.constructs.Construct;
 
 import java.util.Map;
@@ -31,6 +31,7 @@ public class ApiLambdaConstruct extends Construct {
                 .runtime(Runtime.NODEJS_22_X)
                 .handler("index.handler")
                 .timeout(Duration.seconds(10))
+                .logGroup(messageHandlerLogGroup)
                 .environment(Map.of(
                         "QUEUE_URL", messageQueue.getQueueUrl()
                 ))
@@ -71,9 +72,7 @@ public class ApiLambdaConstruct extends Construct {
                 .build();
 
         messageQueue.grantSendMessages(this.messageHandlerFunction);
-
     }
-
 
     public Function getMessageHandlerFunction() {
         return messageHandlerFunction;

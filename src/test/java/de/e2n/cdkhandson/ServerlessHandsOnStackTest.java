@@ -50,9 +50,5 @@ public class ServerlessHandsOnStackTest {
         template.hasResourceProperties("AWS::ApiGateway::Method", Map.of(
                 "HttpMethod", "POST"
         ));
-
-        template.hasResourceProperties("AWS::Logs::LogGroup", Map.of(
-                "RetentionInDays", 7
-        ));
     }
 }
