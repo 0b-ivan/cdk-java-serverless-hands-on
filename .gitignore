@@ -1,0 +1,22 @@
+# Java / Maven
+target/
+*.class
+
+# AWS CDK
+cdk.out/
+
+# IDEs
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Environment
+.env
