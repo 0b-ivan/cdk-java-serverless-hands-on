@@ -5,6 +5,9 @@ import software.amazon.awscdk.services.lambda.Code;
 import software.amazon.awscdk.services.lambda.Function;
 import software.amazon.awscdk.services.lambda.Runtime;
 import software.amazon.awscdk.services.sqs.Queue;
+import software.amazon.awscdk.RemovalPolicy;
+import software.amazon.awscdk.services.logs.LogGroup;
+import software.amazon.awscdk.services.logs.RetentionDays;
 import software.constructs.Construct;
 
 import java.util.Map;
@@ -18,6 +21,11 @@ public class ApiLambdaConstruct extends Construct {
             final String id,
             final Queue messageQueue) {
         super(scope, id);
+
+        var messageHandlerLogGroup = LogGroup.Builder.create(this, "MessageHandlerFunctionLogGroup")
+                .retention(RetentionDays.ONE_WEEK)
+                .removalPolicy(RemovalPolicy.DESTROY)
+                .build();
 
         this.messageHandlerFunction = Function.Builder.create(this, "MessageHandlerFunction")
                 .runtime(Runtime.NODEJS_22_X)
@@ -63,7 +71,9 @@ public class ApiLambdaConstruct extends Construct {
                 .build();
 
         messageQueue.grantSendMessages(this.messageHandlerFunction);
+
     }
+
 
     public Function getMessageHandlerFunction() {
         return messageHandlerFunction;
