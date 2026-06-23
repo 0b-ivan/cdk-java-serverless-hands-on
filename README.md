@@ -32,7 +32,7 @@ Die Lambda verarbeitet den Request und schreibt die Nachricht in eine SQS Queue.
 
 Benötigt werden:
 
-* Java 17
+* Java 21
 * Maven
 * Node.js / npm
 * AWS CLI
