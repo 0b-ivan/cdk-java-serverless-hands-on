@@ -15,10 +15,7 @@ public class ServerlessHandsOnStack extends Stack {
             final HandsOnProps props) {
         super(scope, id, props);
 
-        Tags.of(this).add("Project", props.getProjectName());
-        Tags.of(this).add("Workshop", "cdk-java");
-        Tags.of(this).add("Owner", props.getOwner());
-        Tags.of(this).add("Environment", props.getHandsOnEnvironment().name());
+        Tagging.applyDefaultTags(this, props);
 
         var messageQueueConstruct = new MessageQueueConstruct(
                 this,

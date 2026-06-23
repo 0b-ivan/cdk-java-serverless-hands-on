@@ -11,6 +11,12 @@ public class Constants {
      */
     public static final String WORKSHOP_ACCOUNT_ID = "111111111111";
 
+    public static final String MANAGED_BY = "aws-cdk";
+    public static final String COST_CENTER = "training";
+    public static final String REPOSITORY = "cdk-java-serverless-hands-on";
+    public static final String APPLICATION = "serverless-hands-on";
+    public static final String TTL = "1d";
+
     public static final String PROJECT_NAME = "cdk-java-serverless-hands-on";
     public static final String WORKSHOP_NAME = "cdk-java";
     public static final String OWNER = "developer";
