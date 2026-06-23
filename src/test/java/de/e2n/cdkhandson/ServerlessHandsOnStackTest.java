@@ -23,6 +23,7 @@ public class ServerlessHandsOnStackTest {
                 Constants.OWNER,
                 Constants.MESSAGE_QUEUE_NAME);
 
+
         ServerlessHandsOnStack stack = new ServerlessHandsOnStack(
                 app,
                 "TestServerlessHandsOnStack",
@@ -34,6 +35,12 @@ public class ServerlessHandsOnStackTest {
                 "VisibilityTimeout", 30,
                 "MessageRetentionPeriod", 345600,
                 "SqsManagedSseEnabled", true
+        ));
+
+        template.hasResourceProperties("AWS::Lambda::Function", Map.of(
+                "Handler", "index.handler",
+                "Runtime", "nodejs22.x",
+                "Timeout", 10
         ));
     }
 }

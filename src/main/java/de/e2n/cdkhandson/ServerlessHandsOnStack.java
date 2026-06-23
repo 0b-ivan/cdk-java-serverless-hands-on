@@ -1,9 +1,11 @@
 package de.e2n.cdkhandson;
 
+import de.e2n.cdkhandson.constructs.ApiLambdaConstruct;
 import de.e2n.cdkhandson.constructs.MessageQueueConstruct;
 import de.e2n.cdkhandson.model.HandsOnProps;
 import software.amazon.awscdk.CfnOutput;
 import software.amazon.awscdk.Stack;
+import software.amazon.awscdk.services.lambda.Function;
 import software.amazon.awscdk.services.sqs.Queue;
 import software.constructs.Construct;
 
@@ -14,6 +16,9 @@ public class ServerlessHandsOnStack extends Stack {
     private MessageQueueConstruct messageQueueConstruct;
     private Queue messageQueue;
 
+    private ApiLambdaConstruct apiLambdaConstruct;
+    private Function messageHandlerFunction;
+
     public ServerlessHandsOnStack(
             final Construct scope,
             final String id,
@@ -21,7 +26,10 @@ public class ServerlessHandsOnStack extends Stack {
         super(scope, id, props);
         this.props = props;
 
+        Tagging.applyDefaultTags(this, props);
+
         messageQueue("MessageQueueConstruct");
+        apiLambda("ApiLambdaConstruct");
         outputs();
     }
 
@@ -34,12 +42,36 @@ public class ServerlessHandsOnStack extends Stack {
         messageQueue = messageQueueConstruct.getMessageQueue();
     }
 
-    private void outputs() {
+    private void apiLambda(final String id) {
         if (messageQueue == null) {
             throw new IllegalStateException("messageQueue is null");
         }
 
+        apiLambdaConstruct = new ApiLambdaConstruct(
+                this,
+                id,
+                messageQueue);
+
+        messageHandlerFunction = apiLambdaConstruct.getMessageHandlerFunction();
+    }
+
+    private void outputs() {
+        if (messageQueue == null) {
+            throw new IllegalStateException("messageQueue is null");
+        }
+        if (messageHandlerFunction == null) {
+            throw new IllegalStateException("messageHandlerFunction is null");
+        }
+
+        lambdaOutputs();
         queueOutputs();
+    }
+
+    private void lambdaOutputs() {
+        CfnOutput.Builder.create(this, "MessageHandlerFunctionName")
+                .description("Name of the Lambda function handling API messages")
+                .value(messageHandlerFunction.getFunctionName())
+                .build();
     }
 
     private void queueOutputs() {
