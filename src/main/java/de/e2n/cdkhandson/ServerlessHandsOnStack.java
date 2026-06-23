@@ -4,29 +4,45 @@ import de.e2n.cdkhandson.constructs.MessageQueueConstruct;
 import de.e2n.cdkhandson.model.HandsOnProps;
 import software.amazon.awscdk.CfnOutput;
 import software.amazon.awscdk.Stack;
-import software.amazon.awscdk.Tags;
+import software.amazon.awscdk.services.sqs.Queue;
 import software.constructs.Construct;
 
 public class ServerlessHandsOnStack extends Stack {
+
+    private final HandsOnProps props;
+
+    private MessageQueueConstruct messageQueueConstruct;
+    private Queue messageQueue;
 
     public ServerlessHandsOnStack(
             final Construct scope,
             final String id,
             final HandsOnProps props) {
         super(scope, id, props);
+        this.props = props;
 
-        Tags.of(this).add("Project", props.getProjectName());
-        Tags.of(this).add("Workshop", "cdk-java");
-        Tags.of(this).add("Owner", props.getOwner());
-        Tags.of(this).add("Environment", props.getHandsOnEnvironment().name());
+        messageQueue("MessageQueueConstruct");
+        outputs();
+    }
 
-        var messageQueueConstruct = new MessageQueueConstruct(
+    private void messageQueue(final String id) {
+        messageQueueConstruct = new MessageQueueConstruct(
                 this,
-                "MessageQueueConstruct",
+                id,
                 props.getMessageQueueName());
 
-        var messageQueue = messageQueueConstruct.getMessageQueue();
+        messageQueue = messageQueueConstruct.getMessageQueue();
+    }
 
+    private void outputs() {
+        if (messageQueue == null) {
+            throw new IllegalStateException("messageQueue is null");
+        }
+
+        queueOutputs();
+    }
+
+    private void queueOutputs() {
         CfnOutput.Builder.create(this, "MessageQueueUrl")
                 .description("URL of the SQS message queue")
                 .value(messageQueue.getQueueUrl())
