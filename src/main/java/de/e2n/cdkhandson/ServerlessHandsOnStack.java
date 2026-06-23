@@ -2,6 +2,7 @@ package de.e2n.cdkhandson;
 
 import de.e2n.cdkhandson.constructs.MessageQueueConstruct;
 import de.e2n.cdkhandson.model.HandsOnProps;
+import de.e2n.cdkhandson.constructs.ApiLambdaConstruct;
 import software.amazon.awscdk.CfnOutput;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.Tags;
@@ -23,6 +24,18 @@ public class ServerlessHandsOnStack extends Stack {
                 props.getMessageQueueName());
 
         var messageQueue = messageQueueConstruct.getMessageQueue();
+
+        var apiLambdaConstruct = new ApiLambdaConstruct(
+                this,
+                "ApiLambdaConstruct",
+                messageQueue);
+
+        var messageHandlerFunction = apiLambdaConstruct.getMessageHandlerFunction();
+
+        CfnOutput.Builder.create(this, "MessageHandlerFunctionName")
+                .description("Name of the Lambda function handling API messages")
+                .value(messageHandlerFunction.getFunctionName())
+                .build();
 
         CfnOutput.Builder.create(this, "MessageQueueUrl")
                 .description("URL of the SQS message queue")
